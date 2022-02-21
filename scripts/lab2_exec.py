@@ -22,6 +22,7 @@ from lab2_header import *
 SPIN_RATE = 20
 
 # UR3 home location
+# home = np.radians([120, -90, 90, -90, -90, 0])
 home = np.radians([162.33, -109.69, 115.25, -94.18, -89.5, 129.27])
 
 # Hanoi tower location 0
@@ -57,6 +58,7 @@ current_position_set = False
 
 # UR3 current position, using home position for initialization
 current_position = copy.deepcopy(home)
+current_gripper = copy.deepcopy(home)
 
 ############## Your Code Start Here ##############
 """
@@ -74,13 +76,18 @@ Q = [ [Q10, Q11, Q12, Q13], \
 TODO: define a ROS topic callback funtion for getting the state of suction cup
 Whenever ur3/gripper_input publishes info this callback function is called.
 """
+# Topic: /ur3/gripper_input
+# Data type: ur3_driver/gripper_input
+# Name: ur3_driver/gripper_input
+# Data location: rosmsg info ur3_driver/position, DIGIN
+def gripper_callback(msg):
+    global current_gripper
+    global digital_in_0
 
-
-
+    digital_in_0 = msg.DIGIN
+    current_gripper = msg.DIGIN
 
 ############### Your Code End Here ###############
-
-
 """
 Whenever ur3/position publishes info, this callback function is called.
 """
@@ -241,6 +248,14 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
     # Wait 1 sec 
     time.sleep(1.0)
 
+    # Check to see if there actually is a block there, if not, halt with error 
+    if digital_in_0 == 0:
+        print("There is no block.")
+        move_arm(pub_cmd, loop_rate, home, 4.0, 4.0)
+        gripper(pub_cmd, loop_rate, suction_off)
+        sys.exit()
+
+
     # Go to height right above start height at start pos 
     if(start_loc == 0):
         move_arm(pub_cmd, loop_rate, Q10, 4.0, 4.0)
@@ -286,6 +301,13 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
     # Wait 1 sec
     time.sleep(1.0)
 
+    # Check to see if there actually is a block there, if not, halt with error 
+    if digital_in_0 == 0:
+        print("There is no block.")
+        move_arm(pub_cmd, loop_rate, home, 4.0, 4.0)
+        gripper(pub_cmd, loop_rate, suction_off)
+        sys.exit()
+
      #Turn off gripper
     gripper(pub_cmd, loop_rate, suction_off)
 
@@ -321,6 +343,13 @@ def main():
     # each time data is published
     sub_position = rospy.Subscriber('ur3/position', position, position_callback)
 
+    # Initialize subscriber to ur3/gripper_input and callback function
+    # each time data is published
+    # Topic: /ur3/gripper_input
+    # Data type: ur3_driver/gripper_input
+    # Name: ur3_driver/gripper_input
+    # Data location: rosmsg info ur3_driver/gripper_input
+    sub_gripper_input = rospy.Subscriber('ur3/gripper_input', gripper_input, gripper_callback)
     ############## Your Code Start Here ##############
     # TODO: define a ROS subscriber for ur3/gripper_input message and corresponding callback function
 
@@ -397,7 +426,7 @@ def main():
             print("Please just enter the character 1 2 3 or 0 to quit \n\n")
 
     ############### Your Code End Here ###############
-
+    print("line 428")
     # Check if ROS is ready for operation
     while(rospy.is_shutdown()):
         print("ROS is shutdown!")
