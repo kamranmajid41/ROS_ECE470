@@ -1,0 +1,26 @@
+ur3@ur3-4:~/catkin_kmajid2$ rosrun lab3pkg_py lab3_exec.py -105 -105 100 -50 -110 -30
+
+theta1: -105, theta2: -105, theta3: 100, theta4: -50, theta5: -110, theta6: -30
+
+Foward kinematics calculated:
+
+[[  7.97496848e-01  -2.89016832e-01   5.29592342e-01  -1.26212462e+02]
+ [ -1.67974037e-01   7.36721243e-01   6.55001171e-01  -1.69938530e+02]
+ [ -5.79468292e-01  -6.11319132e-01   5.38985545e-01   3.77033346e+02]
+ [  0.00000000e+00   0.00000000e+00   0.00000000e+00   1.00000000e+00]]
+
+[INFO] [1646151209.050294]: Just published again driver_msg
+[INFO] [1646151211.350182]: Destination is reached!
+ur3@ur3-4:~/catkin_kmajid2$ rosrun lab3pkg_py lab3_exec.py -15 -80 90 -50 -45 -20
+
+theta1: -15, theta2: -80, theta3: 90, theta4: -50, theta5: -45, theta6: -20
+
+Foward kinematics calculated:
+
+[[ -4.93654648e-01  -6.07754350e-01  -6.22044804e-01   2.44593838e+02]
+ [  8.20177106e-01  -8.75288348e-02  -5.65374405e-01   2.98421616e+02]
+ [  2.89161897e-01  -7.89286610e-01   5.41675220e-01   3.57897856e+02]
+ [  0.00000000e+00   0.00000000e+00   0.00000000e+00   1.00000000e+00]]
+
+[INFO] [1646151298.865136]: Just published again driver_msg
+[INFO] [1646151300.765045]: Destination is reached!
