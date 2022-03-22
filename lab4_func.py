@@ -78,10 +78,10 @@ def lab_fk(theta1, theta2, theta3, theta4, theta5, theta6):
 
 	print(str(T) + "\n")
 
-	return_value[0] = theta1 + PI
+	return_value[0] = theta1 + np.pi
 	return_value[1] = theta2
 	return_value[2] = theta3
-	return_value[3] = theta4 - (0.5*PI)
+	return_value[3] = theta4 - (0.5*np.pi)
 	return_value[4] = theta5
 	return_value[5] = theta6
 
@@ -151,8 +151,8 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
 	x_4 = L4 * math.cos(theta_1) # 4:3
 	z_4 = 141 # 4:4
 	# 4:5
-	x_3end = x_4
-	y_3end = y_4
+	x_3end = x_cen + (110 * np.sin(theta_1)) + (-83 * np.cos(theta_1))
+	y_3end = y_cen - (110 * np.sin(theta_1)) + (-83 * np.cos(theta_1))
 	z_3end = z_4 + z_cen 
 	#===============================================================#
 	# Find -theta_2
@@ -162,36 +162,55 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
 	L1 = 152
 	L3 = 224
 	L5 = 213
+	# print(x_3end)
+	# print(y_3end)
+	# print(z_3end)
+	# d_a = math.sqrt((x_3end ** 2) + (y_3end ** 2))
+	# d_1 = math.sqrt( (d_a ** 2) + ((z_3end - L1) ** 2) )
+	# print(d_1)
 
-	d_1 = math.sqrt( (x_3end ** 2) + ((z_3end - L1) ** 2) )
-	ret = ( (L5 ** 2) - (L3 ** 2) - (d_1 ** 2) ) / (-2 * L3 * d_1 ) 
-	eps = np.arcsin((z_3end - L1) / d_1)
-	alpha_0 = np.arccos( ( (L5 ** 2) - (L3 ** 2) - (d_1 ** 2) ) / (-2 * L3 * d_1 ) ) # 5:3
-	beta_0 = np.arccos( ( (L3 ** 2) + (L5 ** 2) - (d_1 ** 2) ) / ( 2 * L3 * L5 ) ) # 5:2
-	theta_n = np.arctan2(z_3end, x_3end) - alpha_0 # 5:4
-	theta_2 = -1 * ((np.pi / 2) - theta_n) # 5:5
+	# ret = ( (L5 ** 2) - (L3 ** 2) - (d_1 ** 2) ) / (-2 * L3 * d_1 ) 
+	# print(ret)
+	# eps = np.arcsin((z_3end - L1) / d_1)
+	# print(eps)
+	# alpha_0 = np.arccos( ( (L5 ** 2) - (L3 ** 2) - (d_1 ** 2) ) / (-2 * L3 * d_1 ) ) # 5:3
+	# beta_0 = np.arccos( ( (L3 ** 2) + (L5 ** 2) - (d_1 ** 2) ) / ( 2 * L3 * L5 ) ) # 5:2
+	# theta_n = np.arctan2(z_3end, x_3end) - alpha_0 # 5:4
+	# theta_2 = -1 * ((np.pi / 2) - theta_n) # 5:5
+	theta_z = math.sqrt((x_3end ** 2) + (y_3end ** 2))
+	theta_y = math.sqrt((x_3end ** 2) + (y_3end ** 2) + ((z_3end - L1) ** 2))
+	beta_1 = np.arctan2(z_3end - L1, theta_z)
+	beta_2 = np.arccos( ((L3 ** 2) + (theta_y ** 2) - (L5 ** 2)) / (2 * L3 * theta_y))
+	theta_2 = -1 * (beta_2 + beta_1)
+
+	ret = ((L3 ** 2) + (L5 ** 2) - (beta_2 ** 2)) / (2 * L3 * L5)
+	print(ret)
+	
+	theta_x = np.arccos( ((L3 ** 2) + (L5 ** 2) - (theta_y ** 2)) / (2 * L3 * L5) )
+
 	#===============================================================#
 	# Find theta_3
 	#===============================================================#
-	theta_3 = math.pi - beta_0 # 5:6
+	theta_3 = np.pi - theta_x # 5:6
 	#===============================================================#
 	# Find -theta_4
 	#===============================================================#
-	jeffrey = np.pi - alpha_0 - beta_0
-	jeff = (np.pi / 2) - jeffrey 
-	je = (np.pi / 2) - eps
-	theta_4 = -1 * (je - jeff) # 5:13
+	# jeffrey = np.pi - alpha_0 - beta_0
+	# jeff = (np.pi / 2) - jeffrey 
+	# je = (np.pi / 2) - eps
+	# theta_4 = -1 * (je - jeff) # 5:13
+	theta_4 = -1 * (theta_2 + theta_3)
 	#===============================================================#
 	# Find theta_5
 	#===============================================================#
-	theta_5 = np.pi / 2
+	theta_5 = np.radians(-90)
 	#===============================================================#
-	theta1 = theta_1
-	theta2 = theta_2
-	theta3 = theta_3
-	theta4 = theta_4
-	theta5 = theta_5
-	theta6 = theta_6
+	theta1 = (theta_1)
+	theta2 = (theta_2)
+	theta3 = (theta_3)
+	theta4 = (theta_4)
+	theta5 = (theta_5)
+	theta6 = (theta_6)
 	print("\n")
 	# List of thetas to test with 
 	thetas = [theta1, theta2, theta3, theta4, theta5, theta6]
@@ -199,7 +218,6 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
 	for i in range(6): 
 		print("theta " + str(i + 1) + ": " + str(np.degrees(thetas[i])))
 	print("\n")
-	# return lab_fk(theta1, theta2, theta3, theta4, theta5, theta6)
+	return lab_fk(theta1, theta2, theta3, theta4, theta5, theta6)
 
-# Test invk, params : lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree)
-lab_invk(0.2, 0.4, 0.05, 45)
+lab_invk(0.1, 0.1, 0.15, 90)
