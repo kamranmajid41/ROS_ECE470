@@ -100,32 +100,41 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
 	#===============================================================#
 	# Find [x_cen, y_cen, z_cen]: 
 	#===============================================================#
-	lx_1 = x + 150 # x-distance from origin to x
-	# Straight line distance from origin in top-down view to [x,y,z]
-	d_0 = np.sqrt( math.pow( (x + 150) , 2) + math.pow( (y - 150) , 2) ) 
-	theta_a = np.arcsin(lx_1 / d_0) # 1:1
-	theta_b = (np.pi / 2) - yaw # 1:2
-	theta_c = theta_a - theta_b # 1:3
-	L2 = 53.5
-	c = math.sqrt( (d_0 ** 2) +  (L2 ** 2) - ( 2 * d_0 * L2 * np.cos(theta_c) ) ) # 1:4 
-	theta_d = (np.pi / 2) - theta_a # 1:5
-	theta_e = np.arccos( ( (L2 ** 2) - (d_0 ** 2) - (c ** 2) ) / ( -2 * d_0 * c ) ) # 1:6
-	theta_f = theta_d - theta_e # 1:7
-	lx_2 = c * np.cos(theta_f) # 1:8
-	ly_2 = math.sqrt( (c ** 2) - (lx_2 ** 2) ) # 1:9
-	# 1:10
-	x_cen = lx_2
-	y_cen = ly_2
+	# lx_1 = x + 150 # x-distance from origin to x
+	# # Straight line distance from origin in top-down view to [x,y,z]
+	# d_0 = np.sqrt( math.pow( (x + 150) , 2) + math.pow( (y - 150) , 2) ) 
+	# theta_a = np.arcsin(lx_1 / d_0) # 1:1
+	# theta_b = (np.pi / 2) - yaw # 1:2
+	# theta_c = theta_a - theta_b # 1:3
+	# L2 = 53.5
+	# c = math.sqrt( (d_0 ** 2) +  (L2 ** 2) - ( 2 * d_0 * L2 * np.cos(theta_c) ) ) # 1:4 
+	# theta_d = (np.pi / 2) - theta_a # 1:5
+	# theta_e = np.arccos( ( (L2 ** 2) - (d_0 ** 2) - (c ** 2) ) / ( -2 * d_0 * c ) ) # 1:6
+	# theta_f = theta_d - theta_e # 1:7
+	# lx_2 = c * np.cos(theta_f) # 1:8
+	# ly_2 = math.sqrt( (c ** 2) - (lx_2 ** 2) ) # 1:9
+	# # 1:10
+	x += 150 
+	y -= 150
+	z -= 10
+	
+	x_cen = x - (53.5 * np.cos(yaw))
+	y_cen = y - (53.5 * np.sin(yaw))
 	z_cen = z 
+
+
+	print(x_cen)
+	print(y_cen)
+	print(z_cen)
 	# c1 = 53.2 # last link length 
 
 	# y_cen = y - (c1 * np.sin(yaw))
 	# x_cen = x - (c1 * np.cos(yaw))
 	# z_cen = z 
 
-	# # Find straight line dist from origin to cen values 
-	# c = math.sqrt((x_cen**2) + (y_cen**2))
-	# print(c)
+	# Find straight line dist from origin to cen values 
+	c = math.sqrt((x_cen**2) + (y_cen**2))
+	print(c)
 	#===============================================================#
 	# Find theta_1
 	#===============================================================#
@@ -133,6 +142,7 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
 	theta_h = (np.pi / 2) - theta_g # 2:2
 	theta_i = np.arcsin(110 / c) # 2:3
 	theta_1 = theta_g - theta_i # 2:4
+	print(np.degrees(theta_1))
 	#===============================================================#
 	# Find theta_6
 	#===============================================================#
@@ -152,7 +162,7 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
 	z_4 = 141 # 4:4
 	# 4:5
 	x_3end = x_cen + (110 * np.sin(theta_1)) + (-83 * np.cos(theta_1))
-	y_3end = y_cen - (110 * np.sin(theta_1)) + (-83 * np.cos(theta_1))
+	y_3end = y_cen - (110 * np.cos(theta_1)) + (-83 * np.sin(theta_1))
 	z_3end = z_4 + z_cen 
 	#===============================================================#
 	# Find -theta_2
@@ -160,11 +170,11 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
 	# d_1 = math.sqrt( (x_3end ** 2) + (z_3end ** 2) ) # 5:1 
 	# print(d_1)
 	L1 = 152
-	L3 = 224
+	L3 = 244
 	L5 = 213
-	# print(x_3end)
-	# print(y_3end)
-	# print(z_3end)
+	print(x_3end)
+	print(y_3end)
+	print(z_3end)
 	# d_a = math.sqrt((x_3end ** 2) + (y_3end ** 2))
 	# d_1 = math.sqrt( (d_a ** 2) + ((z_3end - L1) ** 2) )
 	# print(d_1)
@@ -177,16 +187,21 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
 	# beta_0 = np.arccos( ( (L3 ** 2) + (L5 ** 2) - (d_1 ** 2) ) / ( 2 * L3 * L5 ) ) # 5:2
 	# theta_n = np.arctan2(z_3end, x_3end) - alpha_0 # 5:4
 	# theta_2 = -1 * ((np.pi / 2) - theta_n) # 5:5
-	theta_z = math.sqrt((x_3end ** 2) + (y_3end ** 2))
-	theta_y = math.sqrt((x_3end ** 2) + (y_3end ** 2) + ((z_3end - L1) ** 2))
-	beta_1 = np.arctan2(z_3end - L1, theta_z)
-	beta_2 = np.arccos( ((L3 ** 2) + (theta_y ** 2) - (L5 ** 2)) / (2 * L3 * theta_y))
+	adj_len = math.sqrt((x_3end ** 2) + (y_3end ** 2))
+	opp_len = z_3end - L1 
+	dist = math.sqrt((adj_len ** 2) + (opp_len ** 2))
+	print(dist)
+	beta_1 = np.arctan2(opp_len, adj_len)
+	print(beta_1)
+	beta_2 = np.arccos( ((L3 ** 2) + (dist ** 2) - (L5 ** 2)) / (2 * L3 * dist) )
+	print(beta_2)
 	theta_2 = -1 * (beta_2 + beta_1)
+	print(np.degrees(theta_2))
 
-	ret = ((L3 ** 2) + (L5 ** 2) - (beta_2 ** 2)) / (2 * L3 * L5)
-	print(ret)
+	# ret = ((L3 ** 2) + (L5 ** 2) - (beta_2 ** 2)) / (2 * L3 * L5)
+	# print(ret)
 	
-	theta_x = np.arccos( ((L3 ** 2) + (L5 ** 2) - (theta_y ** 2)) / (2 * L3 * L5) )
+	theta_x = np.arccos( ((L3 ** 2) + (L5 ** 2) - (dist ** 2)) / (2 * L3 * L5) )
 
 	#===============================================================#
 	# Find theta_3
@@ -220,4 +235,5 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
 	print("\n")
 	return lab_fk(theta1, theta2, theta3, theta4, theta5, theta6)
 
-lab_invk(0.1, 0.1, 0.15, 90)
+lab_invk(0.2, 0.4, 0.05, 45)
+lab_invk(0.15,-0.1, 0.25,-45)
